@@ -8,7 +8,7 @@ const CONFIG = {
       database: 'simple_dev'
     },
     migrations: {
-      // directory: ''
+      directory: 'migrations'
     },
     seeds: {
       // directory: ''
