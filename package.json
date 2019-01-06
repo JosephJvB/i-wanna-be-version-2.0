@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server",
     "dev": "nodemon server & webpack --watch --progress",
-    "webpack": "webpack"
+    "webpack": "webpack",
+    "reset": "knex migrate:rollback && knex migrate:latest"
   },
   "keywords": [],
   "author": "",

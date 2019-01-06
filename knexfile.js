@@ -1,6 +1,4 @@
-const knex = require('knex')
-
-const CONFIG = {
+module.exports = {
   development: {
     client: 'pg',
     connection: {
@@ -10,7 +8,7 @@ const CONFIG = {
       database: 'simple_dev'
     },
     migrations: {
-      directory: './migrations'
+      directory: './database/migrations'
     },
     seeds: {
       // directory: ''
@@ -28,5 +26,3 @@ const CONFIG = {
     }
   }
 }
-
-module.exports = knex(CONFIG[process.env.NODE_ENV || 'development'])

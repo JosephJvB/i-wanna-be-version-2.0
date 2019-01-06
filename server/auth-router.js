@@ -1,7 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const knex = require('../database/knexfile')
+const knex = require('../database/connection')
 
 const router = express.Router()
 
@@ -19,6 +19,7 @@ router.post('/register', async (req, res, next) => {
       hash: await createHash(req.body.password)
     }
     const createdUser = await knex('users').insert(newUser).returning(['id', 'username'])
+    .then(res => res[0]) // knex returns result in an array
     createdUser.token = createToken(createdUser)
     return res.status(200).json(createdUser)
   } catch (err) {
@@ -36,7 +37,13 @@ router.post('/login', async (req, res, next) => {
 		const passwordMatch = await matchHash(req.body.password, user.hash)
 		if(!passwordMatch) {
 			return res.status(400).json({ message: 'Incorrect password', error: true })
-		}
+    }
+    const loggedInUser = {
+      id: user.id,
+      username: user.username,
+      token: createToken(user)
+    }
+    res.status(200).json(loggedInUser)
   } catch (err) {
     res.status(500).json({message: err.message, error: true})
   }

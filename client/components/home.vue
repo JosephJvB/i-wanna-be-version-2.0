@@ -12,7 +12,7 @@ export default {
   //  state: mapGetters(['getterName']) 
   },
   methods: {
-    // actions: mapActoins(['actionName'])
+    // actions: mapActions(['actionName'])
   }
 }
 </script>
