@@ -28,6 +28,7 @@ module.exports = {
   },
   plugins: [
     new VueLoaderPlugin(),
+    // this one from harrison, thanks harrison
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'index.html')
     })

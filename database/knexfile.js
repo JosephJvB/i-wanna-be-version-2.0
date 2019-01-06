@@ -10,7 +10,7 @@ const CONFIG = {
       database: 'simple_dev'
     },
     migrations: {
-      // directory: './migrations'
+      directory: './migrations'
     },
     seeds: {
       // directory: ''
@@ -28,7 +28,5 @@ const CONFIG = {
     }
   }
 }
-
-console.log(process.env.NODE || 'development')
 
 module.exports = knex(CONFIG[process.env.NODE_ENV || 'development'])
