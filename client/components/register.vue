@@ -1,12 +1,13 @@
 <template>
   <div>
+    <h1>Register</h1>
     <form>
       <label>Username</label>
       <input type="text" v-model="form.username" name="username"/>
       <label>Password</label>
       <input type="password" v-model="form.password" name="password"/>
       <label>Confirm Password</label>
-      <input type="password" v-model="form.confirmPassword" name="confirm password"/>
+      <input type="password" v-model="confirmPassword" name="confirm password"/>
       <button @click.prevent="doRegister">Submit</button>
       <p>todo: create 'continue as guest' option</p>
       <div>
@@ -26,8 +27,8 @@ export default {
       form: {
         username: '',
         password: '',
-        confirmPassword: ''
-      }
+      },
+      confirmPassword: ''
     }
   },
   computed: {
@@ -35,14 +36,12 @@ export default {
   },
   methods: {
     doRegister() {
-      if(this.form.password !== this.form.confirmPassword) {
+      if(this.form.password !== this.confirmPassword) {
         return console.error('Passwords do not match')
       }
-      // seperate confirmPassword from postData
-      const { confirmPassword, ...postData } = this.form
       return fetch('api/v1/auth/register', {
         method: 'POST',
-        body: JSON.stringify(postData),
+        body: JSON.stringify(this.form),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'

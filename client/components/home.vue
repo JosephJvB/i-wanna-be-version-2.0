@@ -13,9 +13,6 @@ export default {
   //  state: mapGetters(['getterName']) 
   },
   methods: {
-    toLogin() {
-      this.$router.push('/')
-    }
     // actions: mapActions(['actionName'])
   }
 }
