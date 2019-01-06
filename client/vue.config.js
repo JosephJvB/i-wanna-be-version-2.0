@@ -1,11 +1,20 @@
 import Login from './components/login.vue'
+import Register from './components/register.vue'
 import Home from './components/home.vue'
 
 export const router = {
   routes: [
-    {
+    { // this seems weird but whatever
       path: '/',
-      component: Login // login will handle login and register
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      component: Login
+    },
+    {
+      path: '/register',
+      component: Register
     },
     {
       path: '/home',

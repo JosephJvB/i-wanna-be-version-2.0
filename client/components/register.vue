@@ -1,16 +1,17 @@
 <template>
   <div>
-    <h1>Login</h1>
     <form>
       <label>Username</label>
       <input type="text" v-model="form.username" name="username"/>
       <label>Password</label>
       <input type="password" v-model="form.password" name="password"/>
-      <button @click.prevent="doLogin">Submit</button>
+      <label>Confirm Password</label>
+      <input type="password" v-model="form.confirmPassword" name="confirm password"/>
+      <button @click.prevent="doRegister">Submit</button>
       <p>todo: create 'continue as guest' option</p>
       <div>
-        No account?
-        <router-link to="/register">register here</router-link>
+        Already have an account?
+        <router-link to="/login">login here</router-link>
       </div>
     </form>
   </div>
@@ -25,18 +26,23 @@ export default {
       form: {
         username: '',
         password: '',
-      },
+        confirmPassword: ''
+      }
     }
   },
   computed: {
   //  state: mapGetters(['getterName']) 
   },
   methods: {
-    doLogin() {
-      // set response in vuex & cache that somehow
-      return fetch('api/v1/auth/login', {
+    doRegister() {
+      if(this.form.password !== this.form.confirmPassword) {
+        return console.error('Passwords do not match')
+      }
+      // seperate confirmPassword from postData
+      const { confirmPassword, ...postData } = this.form
+      return fetch('api/v1/auth/register', {
         method: 'POST',
-        body: JSON.stringify(this.form),
+        body: JSON.stringify(postData),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -45,7 +51,7 @@ export default {
       .then(json => {
         if(json.error) return console.error(json.message)
         console.log(json)
-        // on success push cache user info and push to home
+        // on success cache user info and push to home
         this.$router.push('/home')
       })
       .catch(console.error)
