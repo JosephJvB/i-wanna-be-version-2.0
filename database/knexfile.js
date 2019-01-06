@@ -1,3 +1,5 @@
+const knex = require('knex')
+
 const CONFIG = {
   development: {
     client: 'pg',
@@ -8,7 +10,7 @@ const CONFIG = {
       database: 'simple_dev'
     },
     migrations: {
-      directory: 'migrations'
+      // directory: './migrations'
     },
     seeds: {
       // directory: ''
@@ -25,6 +27,8 @@ const CONFIG = {
       tableName: 'knex_migrations'
     }
   }
-
 }
-module.exports = CONFIG[process.env.NODE || 'development']
+
+console.log(process.env.NODE || 'development')
+
+module.exports = knex(CONFIG[process.env.NODE_ENV || 'development'])

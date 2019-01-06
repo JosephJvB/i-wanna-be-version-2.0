@@ -1,7 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const knex = require('./knexfile')
+const knex = require('../database/knexfile')
 
 const router = express.Router()
 
@@ -62,7 +62,7 @@ router.post('/logout', async (req, res, next) => {
 // bcrypt return promises
 // jwt is sync
 function createHash (password) {
-	const SALT_ROUNDS = 1
+  const SALT_ROUNDS = 1
 	return bcrypt.hash(password, SALT_ROUNDS)
 }
 function matchHash (password, hash) {
