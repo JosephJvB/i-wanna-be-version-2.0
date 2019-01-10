@@ -32,9 +32,10 @@ export default {
     }
   },
   computed: {
-  //  state: mapGetters(['getterName']) 
+  //...mapGetters(['getterName']) 
   },
   methods: {
+    ...mapActions(['login']),
     doRegister() {
       if(this.form.password !== this.confirmPassword) {
         return console.error('Passwords do not match')
@@ -51,11 +52,11 @@ export default {
         if(json.error) return console.error(json.message)
         console.log(json)
         // on success cache user info and push to home
+        this.login(json)
         this.$router.push('/home')
       })
       .catch(console.error)
     },
-    // actions: mapActions(['actionName'])
   }
 }
 </script>

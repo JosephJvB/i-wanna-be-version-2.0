@@ -25,10 +25,28 @@ export const router = {
 
 // https://github.com/vuejs/vuex/blob/dev/examples/counter/store.js
 export const store = {
-  state: {},
-  getters: {}, // eg: state => state.user
-  actions: {}, // eg: ({commit, state}) => commit('mutation-name')
-  mutations: {} // eg: setUser = (state, payload) => state.user = payload
+  state: {
+    user: null
+  },
+  getters: {
+    currentUsername: state => state.user && state.user.username
+  },
+  actions: {
+    login: (context, user) => {
+      context.commit('loginMutation', user) // second arg is the mutations payload
+    },
+    logout: (context, user) => {
+      // TODO: check state and remove that user
+      context.commit('logoutMutation', user)
+    }
+  },
+  mutations: {
+    loginMutation: (state, user) => {
+      state.user = user
+    },
+    logout: (state, user) => {
+      // TODO: check state and remove that user
+      state.user = null
+    }
+  }
 }
-// mutations do what reducers in redux do(kinda). Must be sync
-// actions can be async, how do you call mutation with a payload?

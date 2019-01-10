@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Home</h1>
+    <p>current user = {{currentUsername || 'no one'}}</p>
     <router-link to="/login">back</router-link>
   </div>
 </template>
@@ -10,10 +11,10 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   computed: {
-  //  state: mapGetters(['getterName']) 
+   ...mapGetters(['currentUsername'])
   },
   methods: {
-    // actions: mapActions(['actionName'])
+    // ...mapActions(['actionName'])
   }
 }
 </script>

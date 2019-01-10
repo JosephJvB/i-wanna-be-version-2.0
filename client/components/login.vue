@@ -29,9 +29,10 @@ export default {
     }
   },
   computed: {
-  //  state: mapGetters(['getterName']) 
+  //  ...mapGetters(['userToken'])
   },
   methods: {
+    ...mapActions(['login', 'logout']),
     doLogin() {
       // set response in vuex & cache that somehow
       return fetch('api/v1/auth/login', {
@@ -46,11 +47,11 @@ export default {
         if(json.error) return console.error(json.message)
         console.log(json)
         // on success push cache user info and push to home
+        this.login(json)
         this.$router.push('/home')
       })
       .catch(console.error)
     },
-    // actions: mapActions(['actionName'])
   }
 }
 </script>
