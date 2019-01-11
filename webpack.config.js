@@ -3,7 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 
 module.exports = {
-  entry: path.join(__dirname, 'client/index.js'),
+  // put babel/poly before entry so browser code can be polyfilled (needed this for async functions on front end)
+  entry: ['@babel/polyfill', path.join(__dirname, 'client/index.js')],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js'

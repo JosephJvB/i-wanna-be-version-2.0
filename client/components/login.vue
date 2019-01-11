@@ -29,28 +29,17 @@ export default {
     }
   },
   computed: {
-  //  ...mapGetters(['userToken'])
   },
   methods: {
-    ...mapActions(['login', 'logout']),
+    ...mapActions(['login']),
+    // pull in login action from vuex store
     doLogin() {
-      // set response in vuex & cache that somehow
-      return fetch('api/v1/auth/login', {
-        method: 'POST',
-        body: JSON.stringify(this.form),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(res => res.json())
-      .then(json => {
-        if(json.error) return console.error(json.message)
-        console.log(json)
-        // on success push cache user info and push to home
-        this.login(json)
-        this.$router.push('/home')
-      })
-      .catch(console.error)
+      return this.login(this.form)
+        .then(user => {
+          console.log('logged in user', user)
+          this.$router.push('/home')
+        })
+        .catch(console.error)
     },
   }
 }

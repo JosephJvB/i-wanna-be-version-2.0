@@ -35,26 +35,17 @@ export default {
   //...mapGetters(['getterName']) 
   },
   methods: {
-    ...mapActions(['login']),
+    // pull in register action from vuex store
+    ...mapActions(['register']),
     doRegister() {
       if(this.form.password !== this.confirmPassword) {
         return console.error('Passwords do not match')
       }
-      return fetch('api/v1/auth/register', {
-        method: 'POST',
-        body: JSON.stringify(this.form),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then(res => res.json())
-      .then(json => {
-        if(json.error) return console.error(json.message)
-        console.log(json)
-        // on success cache user info and push to home
-        this.login(json)
-        this.$router.push('/home')
-      })
+      return this.register(this.form)
+        .then(user => {
+          console.log('register this user', user)
+          this.$router.push('/home')
+        })
       .catch(console.error)
     },
   }

@@ -31,22 +31,65 @@ export const store = {
   getters: {
     currentUsername: state => state.user && state.user.username
   },
+  // each action has access to ALL store info, actions, state, getters. everything!
   actions: {
-    login: (context, user) => {
-      context.commit('loginMutation', user) // second arg is the mutations payload
+    async login(store, formData) {
+      try {
+        // do fetch
+        const response = await POST('api/v1/auth/login', formData).then(res => res.json())
+        // handle errors set by custom express api
+        if(response.error) return console.error(response.message)
+        store.commit('addCurrentUser', response)
+        return response
+      } catch (err) {
+        console.error('client error @ login', err)
+      }
     },
-    logout: (context, user) => {
-      // TODO: check state and remove that user
-      context.commit('logoutMutation', user)
+    async register(store, formData) {
+      try{
+        const response = await POST('api/v1/auth/register', formData).then(res => res.json())
+        if(response.error) return console.error(response.message)
+        store.commit('addCurrentUser', response)
+        return response
+      } catch (err) {
+        console.error('client error @ register', err)
+      }
+    },
+    async logout (store, user) {
+      try {
+        const response = await POST('api/v1/auth/logout', user).then(res => res.json())
+        if(response.error) return console.error(response.message)
+        // TODO: check state and remove that user
+        store.commit('removeCurrentUser', user)
+        return response
+      } catch (err) {
+        console.error('client error @ logout', err)
+      }
     }
   },
   mutations: {
-    loginMutation: (state, user) => {
+    addCurrentUser: (state, user) => {
       state.user = user
     },
-    logout: (state, user) => {
+    removeCurrentUser: (state, user) => {
       // TODO: check state and remove that user
+      // state.activeUsers = state.activeUsers.filter(u => u.id !== user.id)
       state.user = null
     }
   }
+}
+// @ component level, state can be accessed by getters OR my $store.state
+// also actions can be put into component methods with mapActions OR you can go $store.dispatch('actionName') I think. Need to check that one
+
+// window.fetch wrapper for post requests
+// stringifies data and adds headers
+function POST (path, data) {
+  return fetch(path, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
 }
