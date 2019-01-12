@@ -1,13 +1,8 @@
-import Login from './components/login.vue'
-import Register from './components/register.vue'
-import Home from './components/home.vue'
+import Login from './modals/login.vue'
+import Register from './modals/register.vue'
 
 export const router = {
   routes: [
-    { // this seems weird but whatever
-      path: '/',
-      redirect: '/login'
-    },
     {
       path: '/login',
       component: Login
@@ -15,10 +10,6 @@ export const router = {
     {
       path: '/register',
       component: Register
-    },
-    {
-      path: '/home',
-      component: Home
     }
   ]
 }

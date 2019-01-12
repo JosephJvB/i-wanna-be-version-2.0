@@ -42,7 +42,7 @@ export default {
       this.requestLogin(this.form)
         .then(response => {
           console.log('user logged in', response)
-          this.$router.push('/home')
+          this.$router.push('/')
         })
         .catch(console.error)
     },

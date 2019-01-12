@@ -11,6 +11,7 @@ module.exports = {
   },
   module: {
     rules: [
+      // some default thing
       {
         test: /\.m?js$/,
         exclude: /node_modules/,
@@ -21,6 +22,16 @@ module.exports = {
           }
         }
       },
+      // used for bootstrap-vue css loading (to load any css with webpack)
+      // eg in js component: `import 'css/resource'
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      // gimme vue
       {
         test: /\.vue$/,
         loader: 'vue-loader'

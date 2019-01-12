@@ -50,7 +50,7 @@ export default {
       return this.requestRegister(this.form)
         .then(user => {
           console.log('register this user', user)
-          this.$router.push('/home')
+          this.$router.push('/')
         })
       .catch(console.error)
     },
