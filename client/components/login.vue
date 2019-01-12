@@ -28,15 +28,20 @@ export default {
       },
     }
   },
-  computed: {
+    computed: {
+  //...mapGetters(['getterName']) 
   },
   methods: {
-    ...mapActions(['login']),
+    ...mapActions(['requestLogin']),
     // pull in login action from vuex store
     doLogin() {
-      return this.login(this.form)
-        .then(user => {
-          console.log('logged in user', user)
+      //check that username and password exist
+      if(!this.form.username || !this.form.password) {
+        return console.error('Please fill username field and password field to complete login')
+      }
+      this.requestLogin(this.form)
+        .then(response => {
+          console.log('user logged in', response)
           this.$router.push('/home')
         })
         .catch(console.error)

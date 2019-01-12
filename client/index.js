@@ -6,6 +6,9 @@ import { router, store } from './vue.config.js'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
+Vue.mixin({
+  methods: {} // add global helper functions if you wanna
+})
 
 new Vue({
   el: '#mount',

@@ -36,12 +36,18 @@ export default {
   },
   methods: {
     // pull in register action from vuex store
-    ...mapActions(['register']),
+    ...mapActions(['requestRegister']),
     doRegister() {
+      // client side validation
+      // move this to a function that runs @onChange in form. push errors into component state
+      // then on submit, stop submit if there are errors
+      if(!this.form.username || !this.form.password) {
+        return console.error('Please fill username field and password fields to complete registration')
+      }
       if(this.form.password !== this.confirmPassword) {
         return console.error('Passwords do not match')
       }
-      return this.register(this.form)
+      return this.requestRegister(this.form)
         .then(user => {
           console.log('register this user', user)
           this.$router.push('/home')
