@@ -9,3 +9,4 @@ Basic express/vue app with auth talking to postgres db using knex
 - Use sockets so users can see which other users are online in real time
 - do some home brew design then create nice looking pages
   - probably use bootstrap: https://www.youtube.com/watch?v=6FOq4cUdH8k
+  - draw some pictures first cos that's fun

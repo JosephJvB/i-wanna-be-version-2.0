@@ -6,8 +6,8 @@ import { router, store } from './vue.config.js'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
-Vue.mixin({
-  methods: {} // add global helper functions if you wanna
+Vue.mixin({ // things added here goes global to any component in the tree
+  methods: {} // add global functions
 })
 
 new Vue({
