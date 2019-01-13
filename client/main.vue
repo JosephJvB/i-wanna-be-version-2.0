@@ -3,7 +3,7 @@
   <b-row class="header py-3">
     <div class="col-2 d-flex">
       <h4 class="m-auto">As:</h4>
-      <h4 class="m-auto username">{{currentUsername || 'Guest'}}</h4>
+      <h4 class="m-auto username" @click="toggleContent">{{currentUsername || 'Guest'}}</h4>
     </div>
     <div class="col-8 d-flex mx-auto justify-content-center">
       <input class="main-search" type="text" placeholder="search"/>
@@ -15,7 +15,7 @@
   </b-row>
   <!-- main content -->
   <b-row class="main">
-    <div class="col-xs-12 col-md-10 col-lg-8 content">
+    <div v-show="showContent" class="col-xs-12 col-md-10 col-lg-8 content">
       <!-- modals -->
       <router-view/>
     </div>
@@ -29,9 +29,13 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
+      showContent: true
     }
   },
   methods: {
+    toggleContent() {
+      this.showContent = !this.showContent
+    }
   },
   computed: {
     ...mapGetters(['currentUsername'])
@@ -81,6 +85,6 @@ export default {
     margin: auto;
     padding-top: 1rem;
     height: 70vh;
-    box-shadow: 2px 2px 10px 3px #383535;
+    box-shadow: 2px 2px 300px 150px #383535;
   }
 </style>
