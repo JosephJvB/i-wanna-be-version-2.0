@@ -10,3 +10,4 @@ Basic express/vue app with auth talking to postgres db using knex
 - do some home brew design then create nice looking pages
   - probably use bootstrap: https://www.youtube.com/watch?v=6FOq4cUdH8k
   - draw some pictures first cos that's fun
+  - styling is hard I need to look at examples, me homebrewing my own stuff is gonna be uuuuugly

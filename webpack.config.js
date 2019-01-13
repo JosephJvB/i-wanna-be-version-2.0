@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 
 module.exports = {
+  mode: process.env.NODE_ENV || 'development',
   // put babel/poly before entry so browser code can be polyfilled (needed this for async functions on front end)
   entry: ['@babel/polyfill', path.join(__dirname, 'client/index.js')],
   output: {
