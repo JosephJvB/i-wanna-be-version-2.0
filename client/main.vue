@@ -1,9 +1,9 @@
 <template>
-<b-container class="j-container" fluid> <!-- always 100% view width -->
+<b-container @click="hideModal" class="j-container" fluid> <!-- always 100% view width -->
   <b-row class="header py-3">
     <div class="col-2 d-flex">
       <h4 class="m-auto">As:</h4>
-      <h4 class="m-auto username" @click="toggleContent">{{currentUsername || 'Guest'}}</h4>
+      <h4 class="m-auto username" @click.stop="showModal=true">{{currentUsername || 'Guest'}}</h4>
     </div>
     <div class="col-8 d-flex mx-auto justify-content-center">
       <input class="main-search" type="text" placeholder="search"/>
@@ -15,9 +15,11 @@
   </b-row>
   <!-- main content -->
   <b-row class="main">
-    <div v-show="showContent" class="col-xs-12 col-md-10 col-lg-8 content">
-      <!-- modals -->
-      <router-view/>
+    <div v-show="showModal" class="col-xs-12 col-md-10 col-lg-8 content">
+      <div @click.stop id="modal-wrapper">
+        <!-- modals -->
+        <router-view/>
+      </div>
     </div>
   </b-row>
 </b-container>
@@ -29,12 +31,15 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      showContent: true
+      showModal: true
     }
   },
   methods: {
-    toggleContent() {
-      this.showContent = !this.showContent
+    hideModal(e) {
+      if(this.showModal) {
+        if(e.target.id === 'modal-wrapper') return
+        else this.showModal = false
+      }
     }
   },
   computed: {
@@ -83,8 +88,12 @@ export default {
   }
   .content {
     margin: auto;
-    padding-top: 1rem;
+    padding: 0;
     height: 70vh;
     box-shadow: 2px 2px 300px 150px #383535;
+  }
+  #modal-wrapper {
+    padding: 1rem 1rem 0 1rem;
+    height: 100%
   }
 </style>
