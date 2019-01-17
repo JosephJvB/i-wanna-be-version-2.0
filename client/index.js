@@ -5,8 +5,9 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import router from './config/router'
+import users from './config/users.store-module'
 import Main from './main.vue'
-import { router, store } from './vue.config.js'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
@@ -21,5 +22,9 @@ new Vue({
   // ya im a bit salty
   render: r => r(Main),
   router: new VueRouter(router),
-  store: new Vuex.Store(store)
+  store: new Vuex.Store({
+    modules: {
+      users
+    }
+  })
 })

@@ -1,9 +1,11 @@
 <template>
-<b-container @click="hideModal" class="j-container" fluid> <!-- always 100% view width -->
+<!-- always 100% view width -->
+<b-container @click="showModal(false)" fluid>
+  <!-- header -->
   <b-row class="header py-3">
     <div class="col-2 d-flex">
       <h4 class="m-auto">As:</h4>
-      <h4 class="m-auto username" @click.stop="showModal=true">{{currentUsername || 'Guest'}}</h4>
+      <h4 class="m-auto username" @click.stop="showModal(true)">{{currentUsername || 'Guest'}}</h4>
     </div>
     <div class="col-8 d-flex mx-auto justify-content-center">
       <input class="main-search" type="text" placeholder="search"/>
@@ -15,12 +17,15 @@
   </b-row>
   <!-- main content -->
   <b-row class="main">
-    <div v-show="showModal" class="col-xs-12 col-md-10 col-lg-8 content">
+    <div v-if="modalActive" class="col-xs-12 col-md-10 col-lg-8 content">
       <div @click.stop id="modal-wrapper">
         <!-- modals -->
         <router-view/>
       </div>
     </div>
+    <b-row v-else class="mx-5">
+      <h4>CONTENT HERE</h4>
+    </b-row>
   </b-row>
 </b-container>
 </template>
@@ -31,14 +36,17 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      showModal: true
+      modalActive: true
     }
   },
   methods: {
-    hideModal(e) {
-      if(this.showModal) {
-        if(e.target.id === 'modal-wrapper') return
-        else this.showModal = false
+    showModal(bool) {
+      if(bool) {
+        this.modalActive = true
+        // document.body.style.backgroundColor = 'red'
+      } else {
+        this.modalActive = false
+        // document.body.style.backgroundColor = 'yellow'
       }
     }
   },
@@ -50,9 +58,6 @@ export default {
 
 <style>
 /* box-shadow: h v blur spread color; */
-  .j-container {
-    height:100%
-  }
   .header {
     background-color: grey;
     box-shadow: 0 1px 2px 1px #383535;
@@ -90,7 +95,7 @@ export default {
     margin: auto;
     padding: 0;
     height: 70vh;
-    box-shadow: 2px 2px 300px 150px #383535;
+    box-shadow: 2px 2px 10px 5px #383535;
   }
   #modal-wrapper {
     padding: 1rem 1rem 0 1rem;

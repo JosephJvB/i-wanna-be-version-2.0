@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3000
 // save .listen() to variable to have access to server.close() function
 const liveServer = server.listen(PORT, console.log('Express listening @ port', PORT))
 
+// https://medium.com/@a0viedo/5-common-mistakes-in-every-node-js-app-a4bea7ac05bc
 process.on('uncaughtException', err => {
 	console.log('Exiting on error:', err)
 	liveServer.close(() => process.exit(1))
