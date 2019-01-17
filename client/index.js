@@ -7,6 +7,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import router from './config/router'
 import users from './config/users.store-module'
+import cachePlugin from './config/cache.store-plugin'
 import Main from './main.vue'
 
 Vue.use(VueRouter)
@@ -25,6 +26,9 @@ new Vue({
   store: new Vuex.Store({
     modules: {
       users
-    }
+    },
+    plugins: [
+      cachePlugin
+    ]
   })
 })
