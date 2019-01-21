@@ -1,14 +1,16 @@
 <template>
 <!-- always 100% view width -->
-<b-container @click="showModal(false)" fluid>
+<b-container fluid>
   <!-- header -->
   <b-row class="header py-3">
-    <div v-if="currentUser" class="col-2 d-flex">
-      <h4 class="m-auto">As:</h4>
-      <h4 class="m-auto username" @click.stop="showModal(true)">{{currentUser.username}}</h4>
-    </div>
-    <div v-else class="col-2 d-flex">
-      <h4 @click.stop="$router.push('/login');showModal(true)" class="m-auto username">Login</h4>
+    <div class="col-2 d-flex">
+      <router-link v-if="currentUser" to="/" class="d-flex">
+        <h4 class="m-auto">As:</h4>
+        <h4 class="m-auto username">{{currentUser.username}}</h4>
+      </router-link>
+      <router-link v-else to="/">
+        <i class="material-icons">home</i>
+      </router-link>
     </div>
     <div class="col-8 d-flex mx-auto justify-content-center">
       <input class="main-search" type="text" placeholder="search"/>
@@ -20,16 +22,12 @@
   </b-row>
   <!-- main content -->
   <b-row class="main">
-    <div v-if="modalActive" class="col-xs-12 col-md-10 col-lg-8 content">
+    <div class="col-xs-12 col-md-10 col-lg-8 content">
       <div @click.stop id="modal-wrapper">
         <!-- modals -->
         <router-view/>
       </div>
     </div>
-    <b-row v-else class="mx-5">
-      <h4>CONTENT HERE</h4>
-      <button @click.prevent="doLogout">LOGOUT</button>
-    </b-row>
   </b-row>
 </b-container>
 </template>
@@ -39,24 +37,13 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   data() {
-    return {
-      modalActive: true
-    }
+    return {}
   },
   computed: {
     ...mapGetters(['currentUser'])
   },
   methods: {
     ...mapActions(['requestLogout']),
-    showModal(bool) {
-      if(bool) {
-        this.modalActive = true
-        // document.body.style.backgroundColor = 'red'
-      } else {
-        this.modalActive = false
-        // document.body.style.backgroundColor = 'yellow'
-      }
-    },
     doLogout() {
       if(!this.currentUser) {
         return console.error('No active sesson to log out')
@@ -100,6 +87,7 @@ export default {
     box-shadow: 1px 1px 5px 1px #383535;
     max-width: 45px;
     max-height: 45px;
+    color: rgba(0,0,0,0.87);
   }
   .material-icons:hover {
     color: #ffc107;
