@@ -32,12 +32,15 @@ export default {
     }
   },
   computed: {
-  //...mapGetters(['getterName']) 
+  ...mapGetters(['currentUser']) 
   },
   methods: {
     // pull in register action from vuex store
     ...mapActions(['requestRegister']),
     doRegister() {
+      if(this.currentUser) {
+        return console.error('User is already logged in. Please logout to register a new account')
+      }
       // client side validation
       // move this to a function that runs @onChange in form. push errors into component state
       // then on submit, stop submit if there are errors

@@ -1,4 +1,4 @@
-const { POST, cacheGET } = require('../util')
+const { POST, cacheGET, getUUID } = require('../util')
 // basic example: https://github.com/vuejs/vuex/blob/dev/examples/counter/store.js
 // good docs: https://vuex.vuejs.org/guide/modules.html
 export default {
@@ -6,16 +6,23 @@ export default {
     currentUser: null
   },
   getters: {
-    currentUsername: (state, getters, rootState) => {
+    // test (state, getters, rootState) {
+    //   const trigger = state.currentUser
+    //   const cachedUser = cacheGET('currentUser')
+    //   console.log('fullUSER', cachedUser)
+    //   return cachedUser ? cachedUser : null
+    // },
+    currentUser (state, getters, rootState) {
       // getter will run when a piece of state that it is looking at, changes.
       // Im 'getting' from localstorage, but I still want this to run after state.currentUser changes
       // just by referencing that property, this getter will run when that property changes 2ez
       const trigger = state.currentUser
       const cachedUser = cacheGET('currentUser')
-      return cachedUser ? cachedUser.username : ''
-    }
+      console.log('name', cachedUser)
+      return cachedUser ? cachedUser : ''
+    },
   },
-  // actions args[0] = { state(local), commit, rootState(global) }
+  // actions args[0] = { state(local), commit, rootState(global), dispatch }
   actions: {
     async requestLogin(store, formData) {
       const response = await POST('api/v1/auth/login', formData)
@@ -42,6 +49,14 @@ export default {
         throw response.message // caught at component
       }
       store.commit('removeCurrentUser')
+    },
+    async requestGuestLogin(store) {
+      const uuid = getUUID()
+      const response = await POST('api/v1/auth/login-as-guest', {guestId: uuid})
+      if(response.error) {
+        throw response.message
+      }
+      store.commit('setCurrentUser', response)
     }
   },
   mutations: {

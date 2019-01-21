@@ -36,3 +36,16 @@ export const POST = (path, data) => {
     }
   }).then(res => res.json())
 }
+
+/*
+  UUID ISHH
+*/
+export const getUUID = () => {
+  const len = Math.ceil(Math.random() * 20) + 10
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'
+  let uuid = ''
+  for(let i = 0; i < len; i++) {
+    uuid += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return uuid
+}

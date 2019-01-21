@@ -3,9 +3,12 @@
 <b-container @click="showModal(false)" fluid>
   <!-- header -->
   <b-row class="header py-3">
-    <div class="col-2 d-flex">
+    <div v-if="currentUser" class="col-2 d-flex">
       <h4 class="m-auto">As:</h4>
-      <h4 class="m-auto username" @click.stop="showModal(true)">{{currentUsername || 'Guest'}}</h4>
+      <h4 class="m-auto username" @click.stop="showModal(true)">{{currentUser.username}}</h4>
+    </div>
+    <div v-else class="col-2 d-flex">
+      <h4 @click.stop="$router.push('/login');showModal(true)" class="m-auto username">Login</h4>
     </div>
     <div class="col-8 d-flex mx-auto justify-content-center">
       <input class="main-search" type="text" placeholder="search"/>
@@ -25,6 +28,7 @@
     </div>
     <b-row v-else class="mx-5">
       <h4>CONTENT HERE</h4>
+      <button @click.prevent="doLogout">LOGOUT</button>
     </b-row>
   </b-row>
 </b-container>
@@ -39,7 +43,11 @@ export default {
       modalActive: true
     }
   },
+  computed: {
+    ...mapGetters(['currentUser'])
+  },
   methods: {
+    ...mapActions(['requestLogout']),
     showModal(bool) {
       if(bool) {
         this.modalActive = true
@@ -48,10 +56,21 @@ export default {
         this.modalActive = false
         // document.body.style.backgroundColor = 'yellow'
       }
+    },
+    doLogout() {
+      if(!this.currentUser) {
+        return console.error('No active sesson to log out')
+      }
+      this.requestLogout(this.currentUser)
+      .then(response => {
+        console.log('logout success', response)
+        this.$router.push('/')
+      })
+      .catch(console.error)
     }
   },
   computed: {
-    ...mapGetters(['currentUsername'])
+    ...mapGetters(['currentUser'])
   }
 }
 </script>

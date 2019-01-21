@@ -7,6 +7,9 @@ const router = express.Router()
 
 router.use(express.json())
 
+// where am I gonna store guest user data (aka active guests)
+const activeGuests = []
+
 router.post('/register', async (req, res, next) => {
   try {
     // does user already exist?
@@ -50,14 +53,20 @@ router.post('/login', async (req, res, next) => {
 })
 router.post('/logout', async (req, res, next) => {
 	try {
+		if(!req.body) return res.status(400).json({message: 'No request body given', error: true})
 		if(!req.body.token) {
       return res.status(400).json({message: 'No user token on request body', error: true})
     }
     const userData = verifyToken(req.body.token)
+    console.log(userData)
+    if(userData.isGuest) {
+      activeGuests.filter(id => id !== userData.id)
+      return res.status(200).json({message: 'guest logout success'})
+    }
     // does user exist?
 		const user = await knex('users').where({id: userData.id}).first()
 		if(!user) {
-      return res.status(400).json({message: 'User is not logged in', error: true})
+      return res.status(400).json({message: 'User does not exist', error: true})
     }
 		res.status(200).json({message: 'logout success'})
 	} catch(err) {
@@ -65,6 +74,31 @@ router.post('/logout', async (req, res, next) => {
 	}
 })
 
+router.post('/login-as-guest', async (req,res) => {
+  try {
+    if(!req.body.guestId) {
+      return res.status(400).json({message: 'No id given on guest login', error: true})
+    }
+    // is that guest already logged in
+    if(activeGuests.length > 0) {
+      const activeGuest = activeGuests.find(id => id === req.body.guestId)
+      if(activeGuest) {
+        return res.status(400).json({message: 'Guest is already logged in', error: true})
+      }
+    }
+    const guestData = {
+      id: req.body.guestId,
+      username: 'Guest',
+      isGuest: true    
+    }
+    guestData.token = createToken(guestData)
+    activeGuests.push(guestData)
+    res.status(200).json(guestData)
+  } catch(err) {
+    return res.status(500).json({msg: err.message, error: true})
+  }
+})
+ 
 // Auth utils:
 // bcrypt return promises
 // jwt is sync
@@ -77,12 +111,8 @@ function matchHash (password, hash) {
 }
 
 function createToken (user) {
-  const payload = {
-    id: user.id,
-    username: user.username
-  }
   const opts = { expiresIn: '1d' }
-	return jwt.sign(payload, process.env.AUTH_SECRET, opts)
+	return jwt.sign(user, process.env.AUTH_SECRET, opts)
 }
 function verifyToken (token) {
 	const opts  = { maxAge: '1d' }

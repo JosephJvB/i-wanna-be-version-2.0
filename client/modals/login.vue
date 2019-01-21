@@ -8,6 +8,7 @@
       <input type="password" v-model="form.password" name="password"/>
       <button @click.prevent="doLogin">Submit</button>
       <p>todo: create 'continue as guest' option</p>
+      <button @click.prevent="doGuestLogin">Login as Guest</button>
       <div>
         No account?
         <router-link to="/register">register here</router-link>
@@ -28,13 +29,16 @@ export default {
       },
     }
   },
-    computed: {
-  //...mapGetters(['getterName']) 
+  computed: {
+  ...mapGetters(['currentUser']) 
   },
   methods: {
-    ...mapActions(['requestLogin']),
+    ...mapActions(['requestLogin', 'requestGuestLogin']),
     // pull in login action from vuex store
     doLogin() {
+      if(this.currentUser) {
+        return console.error('User already logged in. Please logout before logging in to another account')
+      }
       //check that username and password exist
       if(!this.form.username || !this.form.password) {
         return console.error('Please fill username field and password field to complete login')
@@ -46,6 +50,18 @@ export default {
         })
         .catch(console.error)
     },
+    doGuestLogin() {
+      // if you already have an active token in vuex return? (cos you're already logged in)
+      if(this.currentUser) {
+        return console.error('User already logged in. Please logout before logging in to another account')
+      }
+      this.requestGuestLogin()
+        .then(response => {
+          console.log('guest logged in', response)
+          this.$router.push('/')
+        })
+        .catch(console.error)
+    }
   }
 }
 </script>
