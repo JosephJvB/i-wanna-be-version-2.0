@@ -5,22 +5,23 @@ export default {
   state: {
     currentUser: null
   },
+  /* TRIGGER explained:
+  *   getter will run when a piece of state that it is looking at, changes.
+  *   Im 'getting' from localstorage, but I still want this to run after state.currentUser changes
+  *   just by referencing that property, this getter will run when that property changes 2ez
+  */
   getters: {
-    // test (state, getters, rootState) {
-    //   const trigger = state.currentUser
-    //   const cachedUser = cacheGET('currentUser')
-    //   console.log('fullUSER', cachedUser)
-    //   return cachedUser ? cachedUser : null
-    // },
-    currentUser (state, getters, rootState) {
-      // getter will run when a piece of state that it is looking at, changes.
-      // Im 'getting' from localstorage, but I still want this to run after state.currentUser changes
-      // just by referencing that property, this getter will run when that property changes 2ez
+    currentUsername(state, getters, rootState) {
       const trigger = state.currentUser
       const cachedUser = cacheGET('currentUser')
-      console.log('name', cachedUser)
-      return cachedUser ? cachedUser : ''
+      return cachedUser ? cachedUser.username : ''
     },
+    // for some reason this second getter works now lol
+    currentUser(state, getters, rootState) {
+      const trigger = state.currentUser
+      const cachedUser = cacheGET('currentUser')
+      return cachedUser ? cachedUser : ''
+    }
   },
   // actions args[0] = { state(local), commit, rootState(global), dispatch }
   actions: {

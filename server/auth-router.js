@@ -8,7 +8,7 @@ const router = express.Router()
 router.use(express.json())
 
 // where am I gonna store guest user data (aka active guests)
-const activeGuests = []
+let activeGuests = []
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -58,9 +58,12 @@ router.post('/logout', async (req, res, next) => {
       return res.status(400).json({message: 'No user token on request body', error: true})
     }
     const userData = verifyToken(req.body.token)
-    console.log(userData)
     if(userData.isGuest) {
-      activeGuests.filter(id => id !== userData.id)
+      const guest = activeGuests.find(u => u.id === userData.id)
+      if(!guest) {
+        return res.status(400).json({message: 'No active guest session found', error: true})
+      }
+      activeGuests = activeGuests.filter(u => u.id !== userData.id)
       return res.status(200).json({message: 'guest logout success'})
     }
     // does user exist?
@@ -81,7 +84,7 @@ router.post('/login-as-guest', async (req,res) => {
     }
     // is that guest already logged in
     if(activeGuests.length > 0) {
-      const activeGuest = activeGuests.find(id => id === req.body.guestId)
+      const activeGuest = activeGuests.find(u => u.id === req.body.guestId)
       if(activeGuest) {
         return res.status(400).json({message: 'Guest is already logged in', error: true})
       }
@@ -110,9 +113,9 @@ function matchHash (password, hash) {
   return bcrypt.compare(password, hash)
 }
 
-function createToken (user) {
+function createToken (payload) {
   const opts = { expiresIn: '1d' }
-	return jwt.sign(user, process.env.AUTH_SECRET, opts)
+	return jwt.sign(payload, process.env.AUTH_SECRET, opts)
 }
 function verifyToken (token) {
 	const opts  = { maxAge: '1d' }
