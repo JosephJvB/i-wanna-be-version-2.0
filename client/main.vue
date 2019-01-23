@@ -16,7 +16,7 @@
       <input class="main-search" type="text" placeholder="search"/>
       <i class="material-icons">search</i>
     </div>
-    <div class="col-2 d-flex justify-content-end">
+    <div @click="doLogout" class="col-2 d-flex justify-content-end">
       <i class="material-icons">reorder</i>
     </div>
   </b-row>
@@ -46,6 +46,7 @@ export default {
     ...mapActions(['requestLogout']),
     doLogout() {
       if(!this.currentUser) {
+        console.log('hi')
         return console.error('No active session to log out')
       }
       this.requestLogout(this.currentUser)

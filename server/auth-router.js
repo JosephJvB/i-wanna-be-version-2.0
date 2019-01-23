@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.use(express.json())
 
-// where am I gonna store guest user data (aka active guests)
+// where to store socket-data??
 let activeGuests = []
 
 router.post('/register', async (req, res, next) => {
@@ -24,6 +24,7 @@ router.post('/register', async (req, res, next) => {
     const createdUser = await knex('users').insert(newUser).returning(['id', 'username'])
     .then(res => res[0]) // knex returns result in an array
     createdUser.token = createToken(createdUser)
+    req.app.socketServer.emit('login_event', activeGuests.length)
     return res.status(200).json(createdUser)
   } catch (err) {
     res.status(500).json({message: err.message, error: true})
@@ -46,6 +47,7 @@ router.post('/login', async (req, res, next) => {
       username: user.username,
       token: createToken(user)
     }
+    req.app.socketServer.emit('login_event', activeGuests.length)
     res.status(200).json(loggedInUser)
   } catch (err) {
     res.status(500).json({message: err.message, error: true})
@@ -63,7 +65,9 @@ router.post('/logout', async (req, res, next) => {
       if(!guest) {
         return res.status(400).json({message: 'No active guest session found', error: true})
       }
+      // exit here
       activeGuests = activeGuests.filter(u => u.id !== userData.id)
+      req.app.socketServer.emit('logout_event', activeGuests.length)
       return res.status(200).json({message: 'guest logout success'})
     }
     // does user exist?
@@ -71,7 +75,9 @@ router.post('/logout', async (req, res, next) => {
 		if(!user) {
       return res.status(400).json({message: 'User does not exist', error: true})
     }
-		res.status(200).json({message: 'logout success'})
+    // exit here
+    req.app.socketServer.emit('logout_event', activeGuests.length)
+    res.status(200).json({message: 'logout success'})
 	} catch(err) {
 		res.status(500).json({message: err.message, error: true})
 	}
@@ -94,6 +100,7 @@ router.post('/login-as-guest', async (req,res) => {
     }
     guestData.token = createToken(guestData)
     activeGuests.push(guestData)
+    req.app.socketServer.emit('login_event', activeGuests.length)
     res.status(200).json(guestData)
   } catch(err) {
     return res.status(500).json({msg: err.message, error: true})
