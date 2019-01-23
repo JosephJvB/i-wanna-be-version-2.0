@@ -46,7 +46,7 @@ export default {
     ...mapActions(['requestLogout']),
     doLogout() {
       if(!this.currentUser) {
-        return console.error('No active sesson to log out')
+        return console.error('No active session to log out')
       }
       this.requestLogout(this.currentUser)
       .then(response => {

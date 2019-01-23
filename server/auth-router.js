@@ -79,12 +79,10 @@ router.post('/logout', async (req, res, next) => {
 
 router.post('/login-as-guest', async (req,res) => {
   try {
-    if(!req.body.guestId) {
-      return res.status(400).json({message: 'No id given on guest login', error: true})
-    }
     // is that guest already logged in
     if(activeGuests.length > 0) {
       const activeGuest = activeGuests.find(u => u.id === req.body.guestId)
+      // when will this ever happen?
       if(activeGuest) {
         return res.status(400).json({message: 'Guest is already logged in', error: true})
       }
