@@ -5,6 +5,11 @@ Basic express/vue app with auth talking to postgres db using knex
   - & restrict the register route. I dont people signing up without my say so..
   - where do I store activeGuests/activeUser data. is that a table?
 - Use sockets so users can see which other users are online in real time
+    - [x] basic init
+    - sockets emit from auth router: on success login/logout
+        - allow me to differentiate between user sessions(guests too) and lurkers
+        - do this by setting socket to app? server.set('socket', socket)
+        - brain is finding it hard to think about how where socket logic should live..
 - do some home brew design then create nice looking pages
   - probably use bootstrap: https://www.youtube.com/watch?v=6FOq4cUdH8k
   - [x] draw some pictures first cos that's fun
