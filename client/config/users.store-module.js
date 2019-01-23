@@ -5,7 +5,7 @@ import { POST, cacheGET, getUUID } from '../util'
 // good docs: https://vuex.vuejs.org/guide/modules.html
 export default {
   state: {
-    activeUsers: 0,
+    activeUsers: [],
     currentUser: null,
     socket: io()
   },
@@ -25,6 +25,9 @@ export default {
       const trigger = state.currentUser
       const cachedUser = cacheGET('currentUser')
       return cachedUser ? cachedUser : ''
+    },
+    totalActiveUsers(state) {
+      return state.activeUsers.length
     },
     activeUsers(state) {
       return state.activeUsers
@@ -73,9 +76,7 @@ export default {
     },
     async initSockets(store) {
       const { socket } = store.state
-      const listener = val => store.commit('setActiveUsers', val)
-      socket.on('login_event', listener)
-      socket.on('logout_event', listener)
+      socket.on('active_user_change', users => store.commit('setActiveUsers', users))
     }
   },
   mutations: {

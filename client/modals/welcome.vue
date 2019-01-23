@@ -9,7 +9,10 @@
       <i class="material-icons">person_add</i>
       <button>Register</button>
     </router-link>
-    <h3>{{activeUsers}} active users</h3>
+    <h3>{{totalActiveUsers}} active users</h3>
+    <ul>
+      <li v-for="(user, i) in activeUsers" :key="i">{{user.username}}</li>
+    </ul>
   </div>
 </template>
 
@@ -21,7 +24,7 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['activeUsers'])
+    ...mapGetters(['totalActiveUsers', 'activeUsers'])
   },
   methods: {
     ...mapActions(['initSockets'])

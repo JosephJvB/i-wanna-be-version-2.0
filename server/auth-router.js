@@ -8,7 +8,7 @@ const router = express.Router()
 router.use(express.json())
 
 // where to store socket-data??
-let activeGuests = []
+let activeUsers = []
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -24,12 +24,15 @@ router.post('/register', async (req, res, next) => {
     const createdUser = await knex('users').insert(newUser).returning(['id', 'username'])
     .then(res => res[0]) // knex returns result in an array
     createdUser.token = createToken(createdUser)
-    req.app.socketServer.emit('login_event', activeGuests.length)
-    return res.status(200).json(createdUser)
+    activeUsers.push(createdUser)
+    // exit here
+    req.app.socketServer.emit('active_user_change', activeUsers)
+    res.status(200).json(createdUser)
   } catch (err) {
     res.status(500).json({message: err.message, error: true})
   }
 })
+
 router.post('/login', async (req, res, next) => {
   try {
     // does user exist?
@@ -47,12 +50,15 @@ router.post('/login', async (req, res, next) => {
       username: user.username,
       token: createToken(user)
     }
-    req.app.socketServer.emit('login_event', activeGuests.length)
+    activeUsers.push(loggedInUser)
+    // exit here
+    req.app.socketServer.emit('active_user_change', activeUsers)
     res.status(200).json(loggedInUser)
   } catch (err) {
     res.status(500).json({message: err.message, error: true})
   }
 })
+
 router.post('/logout', async (req, res, next) => {
 	try {
 		if(!req.body) return res.status(400).json({message: 'No request body given', error: true})
@@ -61,22 +67,21 @@ router.post('/logout', async (req, res, next) => {
     }
     const userData = verifyToken(req.body.token)
     if(userData.isGuest) {
-      const guest = activeGuests.find(u => u.id === userData.id)
-      if(!guest) {
-        return res.status(400).json({message: 'No active guest session found', error: true})
-      }
-      // exit here
-      activeGuests = activeGuests.filter(u => u.id !== userData.id)
-      req.app.socketServer.emit('logout_event', activeGuests.length)
-      return res.status(200).json({message: 'guest logout success'})
+      // const guest = activeUsers.find(u => u.id === userData.id)
+      // if(!guest) {
+        //   return res.status(400).json({message: 'No active guest session found', error: true})
+        // }
     }
     // does user exist?
-		const user = await knex('users').where({id: userData.id}).first()
+    const user = userData.isGuest
+    ? userData
+    : await knex('users').where({id: userData.id}).first()
 		if(!user) {
       return res.status(400).json({message: 'User does not exist', error: true})
     }
+    activeUsers = activeUsers.filter(u => u.id !== userData.id)
     // exit here
-    req.app.socketServer.emit('logout_event', activeGuests.length)
+    req.app.socketServer.emit('active_user_change', activeUsers)
     res.status(200).json({message: 'logout success'})
 	} catch(err) {
 		res.status(500).json({message: err.message, error: true})
@@ -86,8 +91,8 @@ router.post('/logout', async (req, res, next) => {
 router.post('/login-as-guest', async (req,res) => {
   try {
     // is that guest already logged in
-    if(activeGuests.length > 0) {
-      const activeGuest = activeGuests.find(u => u.id === req.body.guestId)
+    if(activeUsers.length > 0) {
+      const activeGuest = activeUsers.find(u => u.id === req.body.guestId)
       // when will this ever happen?
       if(activeGuest) {
         return res.status(400).json({message: 'Guest is already logged in', error: true})
@@ -99,8 +104,9 @@ router.post('/login-as-guest', async (req,res) => {
       isGuest: true    
     }
     guestData.token = createToken(guestData)
-    activeGuests.push(guestData)
-    req.app.socketServer.emit('login_event', activeGuests.length)
+    activeUsers.push(guestData)
+    // exit here
+    req.app.socketServer.emit('active_user_change', activeUsers)
     res.status(200).json(guestData)
   } catch(err) {
     return res.status(500).json({msg: err.message, error: true})
